@@ -1,0 +1,7 @@
+= Trello::Client History
+
+== 2012-03-28 v0.0.1
+
+* First public release.
+* Added Trello::Client#member()
+

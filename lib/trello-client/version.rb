@@ -1,5 +1,10 @@
+# encoding: utf-8
+
 module Trello
-  module Client
-    VERSION = "0.0.1"
+  class Client
+    #
+    # Trello::Client version
+    #
+    VERSION = '0.0.1'
   end
 end
