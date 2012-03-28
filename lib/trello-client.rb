@@ -30,7 +30,7 @@ require 'trello-client/version'
 #     client.token = ...
 #
 #     # Get member
-#     client.member('blairchristensen') do |m|
+#     client.member('me') do |m|
 #       # Returns Trello::Client::Member object
 #       m['id']       # => member identity
 #       m['fullName'] # => member name
@@ -97,6 +97,8 @@ module Trello   # :nodoc:
     #
     # Get Trello::Client::Member object
     # 
+    # See https://trello.com/docs/api/member/index.html
+    #
     # Params:
     # +id+:: Member identifier
     # +options+:: (optional) Additional API parameters

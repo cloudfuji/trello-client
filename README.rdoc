@@ -20,7 +20,7 @@ Get user token:
     client.token = ...
 
     # Get member
-    client.member('blairchristensen') do |m|
+    client.member('me') do |m|
       # Returns Trello::Client::Member object
       m['id']       # => member identity
       m['fullName'] # => member name
@@ -48,5 +48,6 @@ https://github.com/blairc/trello-client/
 * Get boards
 * Get lists
 * Get cards
-* Memorize API calls
+* Memoize API calls
+* Add script
 
