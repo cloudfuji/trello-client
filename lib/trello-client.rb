@@ -58,7 +58,8 @@ require 'trello-client/version'
 # * Get boards
 # * Get lists
 # * Get cards
-# * Memorize API calls
+# * Memoize API calls
+# * Add script
 #
 module Trello   # :nodoc:
 
