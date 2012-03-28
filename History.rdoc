@@ -1,5 +1,9 @@
 = Trello::Client History
 
+== YYYY-MM-DD v0.0.2
+
+TBD
+
 == 2012-03-28 v0.0.1
 
 * First public release.
