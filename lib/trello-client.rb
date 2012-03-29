@@ -69,7 +69,7 @@ require 'trello-client/version'
 # * Add script
 # * DRY +Board+ and +Member+
 # * +Board+ initialization should take JSON or +Hash+
-# * Member#boards() should fetch boards if not present?
+# * +Member#boards()+ should fetch boards if not present?
 #
 module Trello   # :nodoc:
 
