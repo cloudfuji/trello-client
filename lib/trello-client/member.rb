@@ -1,34 +1,42 @@
 # encoding: utf-8
 
 module Trello   # :nodoc:
-  class Client  # :nodoc
+  class Client  # :nodoc:
 
     #
     # Trello::Client::Member object
     #
+    # See https://trello.com/docs/api/member/index.html
+    #
     class Member
 
       #
-      # Initialize Trello::Member
+      # Initialize Trello::Client::Member
       #
-      def initialize(json)
-        @json = MultiJson.decode(json)
+      # Params:
+      # +member+:: JSON member
+      #
+      def initialize(member)
+        @member = MultiJson.decode(member)
         yield self if block_given?
         self
       end
 
       #
-      # Get Trello::Member property
+      # Get Trello::Client::Member property
       #
       def[](key)
-        @json[key]
+        @member[key]
       end
 
       #
       # Get +Array+ of boards
       #
       def boards
-        @json['boards'] || []
+        unless @boards
+          @boards = ( @member['boards'] || []  ).collect { |b| Trello::Client::Board.new(b) }
+        end
+        @boards
       end
 
     end # class Member

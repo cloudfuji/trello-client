@@ -1,8 +1,8 @@
 = Trello::Client History
 
-== YYYY-MM-DD v0.0.2
+== 2012-03-29 v0.0.2
 
-TBD
+* Added Trello::Client::Board
 
 == 2012-03-28 v0.0.1
 

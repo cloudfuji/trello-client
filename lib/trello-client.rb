@@ -4,6 +4,7 @@ require 'multi_json'
 require 'open-uri'
 require 'uri'
 
+require 'trello-client/board'
 require 'trello-client/member'
 require 'trello-client/version'
 
@@ -32,12 +33,19 @@ require 'trello-client/version'
 #     # Get member
 #     client.member('me') do |m|
 #       # Returns Trello::Client::Member object
-#       m['id']       # => member identity
+#       m['id']       # => member identifier
 #       m['fullName'] # => member name
 #       m['userName'] # => member user
+#       m['url']      # => member url
+#     end
 #
-#       m.boards.each do |board|
-#         # TODO Returns Board JSON
+#     # Get member with boards
+#     client.member( 'me', :boards => 'all' ) do |m|
+#       m.boards.each do |b|
+#         # Returns Trello::Client::Board objects
+#         b['id']     # => board identifier
+#         b['name']   # => board name
+#         b['url']    # => board url
 #     end 
 #   end
 #
@@ -55,11 +63,13 @@ require 'trello-client/version'
 #
 # == To Do
 #
-# * Get boards
 # * Get lists
 # * Get cards
 # * Memoize API calls
 # * Add script
+# * DRY +Board+ and +Member+
+# * +Board+ initialization should take JSON or +Hash+
+# * Member#boards() should fetch boards if not present?
 #
 module Trello   # :nodoc:
 
