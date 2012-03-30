@@ -34,8 +34,26 @@ Get user token:
         # Returns Trello::Client::Board objects
         b['id']     # => board identifier
         b['name']   # => board name
-        b['url']    # => board url
     end 
+
+    # Get board
+    client.board( '<identifier>' ) do |b|
+      # Returns Trello::Client::Board object
+      b['id']     # => board identifier
+      b['name']   # => board name
+      b['url']    # => board url
+    end
+
+    # Get board with lists
+    client.board( '<identifier>', :lists => 'all' ) do |b|
+      # Returns Trello::Client::Board object
+      b.lists.each do |l|
+        # Returns Trello::Client::List object
+        l['id']       # => list identifier
+        l['idBoard']  # => list board identifier
+        l['name']     # => list name
+      end
+    end
   end
 
 == Author
@@ -52,11 +70,10 @@ https://github.com/blairc/trello-client/
 
 == To Do
 
-* Get lists
+* Trello::Client#list()
 * Get cards
 * Memoize API calls
 * Add script
-* DRY +Board+ and +Member+
-* +Board+ initialization should take JSON or +Hash+
-* +Member#boards()+ should fetch boards if not present?
+* DRY +Board+, +List+ and +Member+
+* Lazy fetching of data that wasn't requested?
 

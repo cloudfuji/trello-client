@@ -14,10 +14,10 @@ module Trello   # :nodoc:
       # Initialize Trello::Client::Board
       #
       # Params:
-      # +board+:: Hash'ified JSON board
+      # +board+:: Hash'ified JSON board or JSON string
       #
       def initialize(board)
-        @board = board
+        @board = board.kind_of?(Hash) ? board : MultiJson.decode(board)
         yield self if block_given?
         self
       end
@@ -27,6 +27,16 @@ module Trello   # :nodoc:
       #
       def[](key)
         @board[key]
+      end
+
+      #
+      # Get +Array+ of Trello::Client::List objects
+      #
+      def lists
+        unless @lists
+          @lists = ( @board['lists'] || []  ).collect { |l| Trello::Client::List.new(l) }
+        end
+        @lists
       end
 
     end # class Board

@@ -39,6 +39,77 @@ class TestClient < Test::Unit::TestCase
     end
   end
 
+  def test_board_parameter_validation
+    Trello::Client.new do |client|
+      assert_raise(RuntimeError, 'invalid id') { client.board(nil) }
+      assert_raise(RuntimeError, 'invalid id') { client.board('')  }
+
+      assert_nil    client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.board('id') }
+      client.api_key = ''
+      assert_equal  '', client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.board('id') }
+      client.api_key = @api_key
+      assert_equal  @api_key, client.api_key  
+
+      assert_nil    client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.board('id') }
+      client.api_token = ''
+      assert_equal  '', client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.board('id') }
+    end
+  end
+
+  def test_board
+    Trello::Client.new do |client|
+      json  = open( File.join( @test_data, 'board.json' ) ).read
+      b     = Trello::Client::Board.new(json)
+      client.stubs(:board).with('id').returns(b)
+
+      assert_not_nil  b
+      assert_kind_of  Trello::Client::Board,  b
+
+      assert_equal    '4f4f9d55cf2e679318098c5b',                                         b['id']
+      assert_equal    'Welcome Board',                                                    b['name']
+      assert_equal    '',                                                                 b['desc']
+      assert_equal    false,                                                              b['closed']
+      assert_equal    true,                                                               b['pinned']
+      assert_equal    'https://trello.com/board/welcome-board/4f4f9d55cf2e679318098c5b',  b['url']
+      assert_not_nil  b['prefs']
+      assert_kind_of  Hash,                                                               b['prefs']
+      assert_equal    5,                                                                  b['prefs'].size
+
+      assert_not_nil  b.lists
+      assert_kind_of  Array,    b.lists
+      assert_equal    0,        b.lists.size
+    end
+  end
+
+  def test_board_with_lists
+    Trello::Client.new do |client|
+      json  = open( File.join( @test_data, 'board_with_lists.json' ) ).read
+      b     = Trello::Client::Board.new(json)
+      client.stubs(:board).with('id').returns(b)
+
+      assert_not_nil  b
+      assert_kind_of  Trello::Client::Board,  b
+
+      assert_equal    '4f4f9d55cf2e679318098c5b',                                         b['id']
+      assert_equal    'Welcome Board',                                                    b['name']
+      assert_equal    '',                                                                 b['desc']
+      assert_equal    false,                                                              b['closed']
+      assert_equal    true,                                                               b['pinned']
+      assert_equal    'https://trello.com/board/welcome-board/4f4f9d55cf2e679318098c5b',  b['url']
+      assert_not_nil  b['prefs']
+      assert_kind_of  Hash,                                                               b['prefs']
+      assert_equal    5,                                                                  b['prefs'].size
+
+      assert_not_nil  b.lists
+      assert_kind_of  Array,    b.lists
+      assert_equal    3,        b.lists.size
+    end
+  end
+
   def test_member_parameter_validation
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.member(nil) }
@@ -62,7 +133,7 @@ class TestClient < Test::Unit::TestCase
 
   def test_member
     Trello::Client.new do |client|
-      json  = open( File.join( @test_data, 'member.json' ) )
+      json  = open( File.join( @test_data, 'member.json' ) ).read
       m     = Trello::Client::Member.new(json)
       client.stubs(:member).with('me').returns(m)
 
@@ -86,7 +157,7 @@ class TestClient < Test::Unit::TestCase
 
   def test_member_with_boards
     Trello::Client.new do |client|
-      json  = open( File.join( @test_data, 'member_with_boards.json' ) )
+      json  = open( File.join( @test_data, 'member_with_boards.json' ) ).read
       m     = Trello::Client::Member.new(json)
       client.stubs(:member).with('me').returns(m)
 

@@ -27,21 +27,21 @@ end
 desc 'Update test data files'
 task :update_test_data do
   $LOAD_PATH << 'lib'
-  require 'open-uri'
   require 'trello-client'
 
   Trello::Client.new do |client|
     client.api_key    = ENV['TRELLO_API_KEY']
     client.api_token  = ENV['TRELLO_API_TOKEN']
-    
+
     {
+      'board'               => [ :board, '4f4f9d55cf2e679318098c5b' ],
+      'board_with_lists'    => [ :board, '4f4f9d55cf2e679318098c5b',  :lists => 'all' ],
       'member'              => [ :member, 'me' ],
       'member_with_boards'  => [ :member, 'me', :boards => 'all' ]
     }.each_pair do |file, request|
       fn    = File.join( File.dirname(__FILE__), 'test', 'data', "#{file}.json" )
-      meth  = request.shift
-      args  = request
-      File.open(fn, 'w') { |fh| fh.puts( client.send meth, *args ) }
+      uri   = "#{ client.api }/#{ request.shift }/#{ request.shift }"
+      File.open(fn, 'w') { |fh| fh.puts client.send( :_get, uri, *request ) }
     end
   end
 

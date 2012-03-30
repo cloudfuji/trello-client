@@ -30,7 +30,7 @@ module Trello   # :nodoc:
       end
 
       #
-      # Get +Array+ of boards
+      # Get +Array+ of Trello::Client::Board objects
       #
       def boards
         unless @boards

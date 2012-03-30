@@ -5,6 +5,7 @@ require 'open-uri'
 require 'uri'
 
 require 'trello-client/board'
+require 'trello-client/list'
 require 'trello-client/member'
 require 'trello-client/version'
 
@@ -45,8 +46,26 @@ require 'trello-client/version'
 #         # Returns Trello::Client::Board objects
 #         b['id']     # => board identifier
 #         b['name']   # => board name
-#         b['url']    # => board url
 #     end 
+#
+#     # Get board
+#     client.board( '<identifier>' ) do |b|
+#       # Returns Trello::Client::Board object
+#       b['id']     # => board identifier
+#       b['name']   # => board name
+#       b['url']    # => board url
+#     end
+#
+#     # Get board with lists
+#     client.board( '<identifier>', :lists => 'all' ) do |b|
+#       # Returns Trello::Client::Board object
+#       b.lists.each do |l|
+#         # Returns Trello::Client::List object
+#         l['id']       # => list identifier
+#         l['idBoard']  # => list board identifier
+#         l['name']     # => list name
+#       end
+#     end
 #   end
 #
 # == Author
@@ -63,13 +82,12 @@ require 'trello-client/version'
 #
 # == To Do
 #
-# * Get lists
+# * Trello::Client#list()
 # * Get cards
 # * Memoize API calls
 # * Add script
-# * DRY +Board+ and +Member+
-# * +Board+ initialization should take JSON or +Hash+
-# * +Member#boards()+ should fetch boards if not present?
+# * DRY +Board+, +List+ and +Member+
+# * Lazy fetching of data that wasn't requested?
 #
 module Trello   # :nodoc:
 
@@ -105,6 +123,20 @@ module Trello   # :nodoc:
     end
 
     #
+    # Get Trello::Client::Board object
+    # 
+    # See https://trello.com/docs/api/board/index.html
+    #
+    # Params:
+    # +id+:: Board identifier
+    # +options+:: (optional) Additional API parameters
+    #
+    def board(id, options = {} )
+      raise('invalid id') if id.nil? || id.empty?
+      Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
+    end
+
+    #
     # Get Trello::Client::Member object
     # 
     # See https://trello.com/docs/api/member/index.html
@@ -115,7 +147,7 @@ module Trello   # :nodoc:
     #
     def member(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      _get "#{api}/members/#{id}", options
+      Trello::Client::Member.new( _get( "#{api}/members/#{id}", options ) )
     end
 
 
