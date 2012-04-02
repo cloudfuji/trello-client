@@ -1,5 +1,9 @@
 = Trello::Client History
 
+== YYYY-MM-DD v0.0.5
+
+* TBD
+
 == 2012-04-02 v0.0.4
 
 * Added Trello::Client#list()
