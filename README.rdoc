@@ -46,7 +46,6 @@ Get user token:
 
     # Get board with lists
     client.board( '<identifier>', :lists => 'all' ) do |b|
-      # Returns Trello::Client::Board object
       b.lists.each do |l|
         # Returns Trello::Client::List object
         l['id']       # => list identifier
@@ -54,6 +53,26 @@ Get user token:
         l['name']     # => list name
       end
     end
+
+    # Get list
+    client.list( '<identifier>' ) do |l|
+      # Returns Trello::Client::List object
+      l['id']       # => list identifier
+      l['idBoard']  # => list board identifier
+      l['name']     # => list name
+    end
+
+    # Get list with cards
+    client.list( '<identifier>' ) do |l|
+      l.cards.each do |c|
+        # Returns Trello::Client::Card object
+        c['id']       # => card identifier
+        c['idBoard']  # => card board identifier
+        c['idList']   # => card list identifier
+        c['name']     # => card name
+      end
+    end
+
   end
 
 == Author
@@ -70,10 +89,8 @@ https://github.com/blairc/trello-client/
 
 == To Do
 
-* Trello::Client#list()
-* Get cards
 * Memoize API calls
 * Add script
-* DRY +Board+, +List+ and +Member+
+* DRY +Card+, +Board+, +List+ and +Member+
 * Lazy fetching of data that wasn't requested?
 

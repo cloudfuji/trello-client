@@ -110,6 +110,69 @@ class TestClient < Test::Unit::TestCase
     end
   end
 
+  def test_list_parameter_validation
+    Trello::Client.new do |client|
+      assert_raise(RuntimeError, 'invalid id') { client.list(nil) }
+      assert_raise(RuntimeError, 'invalid id') { client.list('')  }
+
+      assert_nil    client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.list('me') }
+      client.api_key = ''
+      assert_equal  '', client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.list('me') }
+      client.api_key = @api_key
+      assert_equal  @api_key, client.api_key  
+
+      assert_nil    client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.list('me') }
+      client.api_token = ''
+      assert_equal  '', client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.list('me') }
+    end
+  end
+
+  def test_list
+    Trello::Client.new do |client|
+      json  = open( File.join( @test_data, 'list.json' ) ).read
+      l     = Trello::Client::List.new(json)
+      client.stubs(:list).with('id').returns(l)
+
+      assert_not_nil  l
+      assert_kind_of  Trello::Client::List, l
+
+      assert_equal  '4f4f9d55cf2e679318098c53', l['id']
+      assert_equal   'Basics',                  l['name']
+      assert_equal  false,                      l['closed']
+      assert_equal  '4f4f9d55cf2e679318098c5b', l['idBoard']
+      assert_equal  16384,                      l['pos']
+
+      assert_not_nil  l.cards
+      assert_kind_of  Array,    l.cards
+      assert_equal    0,        l.cards.size
+    end
+  end
+
+  def test_list_with_boards
+    Trello::Client.new do |client|
+      json  = open( File.join( @test_data, 'list_with_cards.json' ) ).read
+      l     = Trello::Client::List.new(json)
+      client.stubs(:list).with('id').returns(l)
+
+      assert_not_nil  l
+      assert_kind_of  Trello::Client::List, l
+
+      assert_equal  '4f4f9d55cf2e679318098c53', l['id']
+      assert_equal   'Basics',                  l['name']
+      assert_equal  false,                      l['closed']
+      assert_equal  '4f4f9d55cf2e679318098c5b', l['idBoard']
+      assert_equal  16384,                      l['pos']
+
+      assert_not_nil  l.cards
+      assert_kind_of  Array,    l.cards
+      assert_equal    6,        l.cards.size
+    end
+  end
+
   def test_member_parameter_validation
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.member(nil) }

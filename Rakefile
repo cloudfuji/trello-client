@@ -34,8 +34,10 @@ task :update_test_data do
     client.api_token  = ENV['TRELLO_API_TOKEN']
 
     {
-      'board'               => [ :board, '4f4f9d55cf2e679318098c5b' ],
-      'board_with_lists'    => [ :board, '4f4f9d55cf2e679318098c5b',  :lists => 'all' ],
+      'board'               => [ :board,  '4f4f9d55cf2e679318098c5b' ],
+      'board_with_lists'    => [ :board,  '4f4f9d55cf2e679318098c5b', :lists => 'all' ],
+      'list'                => [ :list,   '4f4f9d55cf2e679318098c53' ],
+      'list_with_cards'     => [ :list,   '4f4f9d55cf2e679318098c53', :cards => 'all' ],
       'member'              => [ :member, 'me' ],
       'member_with_boards'  => [ :member, 'me', :boards => 'all' ]
     }.each_pair do |file, request|

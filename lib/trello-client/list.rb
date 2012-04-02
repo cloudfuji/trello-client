@@ -30,14 +30,13 @@ module Trello   # :nodoc:
       end
 
       #
-      # TODO Get +Array+ of cards
+      # Get +Array+ of Trello::Client::Card objects
       #
       def cards
-        #unless @lists
-        #  @lists = ( @list['lists'] || []  ).collect { |l| Trello::Client::List.new(l) }
-        #end
-        #@lists
-        @list['cards'] || []
+        unless @lists
+          @cards = ( @list['cards'] || []  ).collect { |c| Trello::Client::Card.new(c) }
+        end
+        @cards
       end
 
     end # class List

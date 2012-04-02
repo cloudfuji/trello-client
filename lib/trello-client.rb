@@ -5,6 +5,7 @@ require 'open-uri'
 require 'uri'
 
 require 'trello-client/board'
+require 'trello-client/card'
 require 'trello-client/list'
 require 'trello-client/member'
 require 'trello-client/version'
@@ -58,7 +59,6 @@ require 'trello-client/version'
 #
 #     # Get board with lists
 #     client.board( '<identifier>', :lists => 'all' ) do |b|
-#       # Returns Trello::Client::Board object
 #       b.lists.each do |l|
 #         # Returns Trello::Client::List object
 #         l['id']       # => list identifier
@@ -66,6 +66,26 @@ require 'trello-client/version'
 #         l['name']     # => list name
 #       end
 #     end
+#
+#     # Get list
+#     client.list( '<identifier>' ) do |l|
+#       # Returns Trello::Client::List object
+#       l['id']       # => list identifier
+#       l['idBoard']  # => list board identifier
+#       l['name']     # => list name
+#     end
+#
+#     # Get list with cards
+#     client.list( '<identifier>' ) do |l|
+#       l.cards.each do |c|
+#         # Returns Trello::Client::Card object
+#         c['id']       # => card identifier
+#         c['idBoard']  # => card board identifier
+#         c['idList']   # => card list identifier
+#         c['name']     # => card name
+#       end
+#     end
+#
 #   end
 #
 # == Author
@@ -82,11 +102,9 @@ require 'trello-client/version'
 #
 # == To Do
 #
-# * Trello::Client#list()
-# * Get cards
 # * Memoize API calls
 # * Add script
-# * DRY +Board+, +List+ and +Member+
+# * DRY +Card+, +Board+, +List+ and +Member+
 # * Lazy fetching of data that wasn't requested?
 #
 module Trello   # :nodoc:
@@ -135,6 +153,21 @@ module Trello   # :nodoc:
       raise('invalid id') if id.nil? || id.empty?
       Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
     end
+
+    #
+    # Get Trello::Client::List object
+    # 
+    # See https://trello.com/docs/api/list/index.html
+    #
+    # Params:
+    # +id+:: List identifier
+    # +options+:: (optional) Additional API parameters
+    #
+    def list(id, options = {} )
+      raise('invalid id') if id.nil? || id.empty?
+      Trello::Client::Member.new( _get( "#{api}/list/#{id}", options ) )
+    end
+
 
     #
     # Get Trello::Client::Member object
