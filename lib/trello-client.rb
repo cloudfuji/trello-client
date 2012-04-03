@@ -102,9 +102,11 @@ require 'trello-client/version'
 #
 # == To Do
 #
-# * Memoize API calls
-# * Add script
 # * DRY +Card+, +Board+, +List+ and +Member+
+# * DRY +board()+, +list()+ and +member()+
+# * Make +trello2todo+ configurable
+# * Actual API test that can be run on demand
+# * Memoize API calls
 # * Lazy fetching of data that wasn't requested?
 #
 module Trello   # :nodoc:
@@ -151,7 +153,9 @@ module Trello   # :nodoc:
     #
     def board(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
+      b = Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
+      yield b if block_given?
+      b
     end
 
     #
@@ -165,7 +169,9 @@ module Trello   # :nodoc:
     #
     def list(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      Trello::Client::Member.new( _get( "#{api}/list/#{id}", options ) )
+      l = Trello::Client::List.new( _get( "#{api}/list/#{id}", options ) )
+      yield l if block_given?
+      l
     end
 
 
@@ -180,7 +186,9 @@ module Trello   # :nodoc:
     #
     def member(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      Trello::Client::Member.new( _get( "#{api}/members/#{id}", options ) )
+      m = Trello::Client::Member.new( _get( "#{api}/members/#{id}", options ) )
+      yield m if block_given?
+      m
     end
 
 
