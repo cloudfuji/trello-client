@@ -39,6 +39,13 @@ module Trello   # :nodoc:
         @boards
       end
 
+      #
+      # String representation.
+      #
+      def to_s
+        @member.inspect
+      end
+
     end # class Member
 
   end # class Client
