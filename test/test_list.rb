@@ -15,6 +15,14 @@ class TestList < Test::Unit::TestCase
     @test_data  = File.join( @test_dir, 'data' )
   end
 
+  def test_to_s
+    Trello::Client.new do |client|
+      json  = open( File.join( @test_data, 'list.json' ) ).read
+      list  = Trello::Client::List.new(json)
+      assert_equal  MultiJson.decode(json).to_s, list.to_s
+    end
+  end
+
   def test_cards
     Trello::Client.new do |client|
       json  = open( File.join( @test_data, 'list_with_cards.json' ) ).read

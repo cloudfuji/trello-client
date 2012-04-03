@@ -43,7 +43,7 @@ module Trello   # :nodoc:
       # String representation.
       #
       def to_s
-        @list.inspect
+        @list.to_s
       end
 
     end # class List

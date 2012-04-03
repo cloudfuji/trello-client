@@ -102,6 +102,7 @@ require 'trello-client/version'
 #
 # == To Do
 #
+# * Add +card()+
 # * DRY +Card+, +Board+, +List+ and +Member+
 # * DRY +board()+, +list()+ and +member()+
 # * Make +trello2todo+ configurable

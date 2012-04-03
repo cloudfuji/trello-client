@@ -89,8 +89,10 @@ https://github.com/blairc/trello-client/
 
 == To Do
 
-* Memoize API calls
-* Add script
 * DRY +Card+, +Board+, +List+ and +Member+
+* DRY +board()+, +list()+ and +member()+
+* Make +trello2todo+ configurable
+* Actual API test that can be run on demand
+* Memoize API calls
 * Lazy fetching of data that wasn't requested?
 

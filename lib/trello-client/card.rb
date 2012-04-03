@@ -33,7 +33,7 @@ module Trello   # :nodoc:
       # String representation.
       #
       def to_s
-        @card.inspect
+        @card.to_s
       end
 
     end # class Card
