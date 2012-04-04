@@ -45,20 +45,6 @@ class TestClient < Test::Unit::TestCase
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.board(nil) }
       assert_raise(RuntimeError, 'invalid id') { client.board('')  }
-
-      assert_nil    client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.board('id') }
-      client.api_key = ''
-      assert_equal  '', client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.board('id') }
-      client.api_key = @api_key
-      assert_equal  @api_key, client.api_key  
-
-      assert_nil    client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.board('id') }
-      client.api_token = ''
-      assert_equal  '', client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.board('id') }
     end
   end
 
@@ -116,20 +102,6 @@ class TestClient < Test::Unit::TestCase
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.card(nil) }
       assert_raise(RuntimeError, 'invalid id') { client.card('')  }
-
-      assert_nil    client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.card('id') }
-      client.api_key = ''
-      assert_equal  '', client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.card('id') }
-      client.api_key = @api_key
-      assert_equal  @api_key, client.api_key  
-
-      assert_nil    client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.card('id') }
-      client.api_token = ''
-      assert_equal  '', client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.card('id') }
     end
   end
 
@@ -169,20 +141,6 @@ class TestClient < Test::Unit::TestCase
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.list(nil) }
       assert_raise(RuntimeError, 'invalid id') { client.list('')  }
-
-      assert_nil    client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.list('me') }
-      client.api_key = ''
-      assert_equal  '', client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.list('me') }
-      client.api_key = @api_key
-      assert_equal  @api_key, client.api_key  
-
-      assert_nil    client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.list('me') }
-      client.api_token = ''
-      assert_equal  '', client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.list('me') }
     end
   end
 
@@ -232,20 +190,6 @@ class TestClient < Test::Unit::TestCase
     Trello::Client.new do |client|
       assert_raise(RuntimeError, 'invalid id') { client.member(nil) }
       assert_raise(RuntimeError, 'invalid id') { client.member('')  }
-
-      assert_nil    client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.member('me') }
-      client.api_key = ''
-      assert_equal  '', client.api_key
-      assert_raise(RuntimeError, 'invalid API key') { client.member('me') }
-      client.api_key = @api_key
-      assert_equal  @api_key, client.api_key  
-
-      assert_nil    client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.member('me') }
-      client.api_token = ''
-      assert_equal  '', client.api_token
-      assert_raise(RuntimeError, 'invalid API token') { client.member('me') }
     end
   end
 
@@ -299,18 +243,9 @@ class TestClient < Test::Unit::TestCase
 
   def test_underscore_get_parameter_validation
     Trello::Client.new do |client|
-      uri = "#{ client.api }/member/me"
-
-      assert_raise(RuntimeError, 'invalid URI') { client.send( :_get, nil ) }
-      assert_raise(RuntimeError, 'invalid URI') { client.send( :_get, '' )  }
-
-      assert_raise(RuntimeError, 'invalid API key') { client.send( :_get, uri ) }
-      assert_raise(RuntimeError, 'invalid API key') { client.send( :_get, uri ) }
-      client.api_key = @api_key
-
-      assert_raise(RuntimeError, 'invalid API token') { client.send( :_get, uri ) }
-      assert_raise(RuntimeError, 'invalid API token') { client.send( :_get, uri ) }
-      client.api_token = @api_token
+      [ nil, '' ].each do |arg|
+        assert_raise(RuntimeError, 'invalid URI') { client.send( :_get, arg ) }
+      end
     end
   end
 
@@ -329,7 +264,28 @@ class TestClient < Test::Unit::TestCase
       assert_not_nil  r
       assert_equal    json, r
     end
+  end
 
+  def test_underscore_validate_request_bang
+    Trello::Client.new do |client|
+      [ nil, '' ].each do |arg|
+        assert_raise(RuntimeError, 'invalid uri') { client.send( :_validate_request!, arg ) }
+      end
+
+      [ nil, '' ].each do |arg|
+        client.api_key = arg
+        assert_equal  client.api_key, arg
+        assert_raise(RuntimeError, 'invalid API key') { client.send( :_validate_request!, 'url' ) }
+      end
+      client.api_key = @api_key
+      assert_equal  @api_key, client.api_key  
+
+      [ nil, '' ].each do |arg|
+        client.api_token = arg
+        assert_equal  client.api_token, arg
+        assert_raise(RuntimeError, 'invalid API token') { client.send( :_validate_request!, 'url' ) }
+      end
+    end
   end
 
 end

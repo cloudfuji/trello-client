@@ -217,9 +217,7 @@ module Trello   # :nodoc:
     private
 
     def _get( uri, options = {} )
-      raise('invalid URI')        if uri.nil?         || uri.empty?
-      raise('invalid API key')    if @api_key.nil?    || @api_key.empty?
-      raise('invalid API token')  if @api_token.nil?  || @api_token.empty?
+      _validate_request!(uri)
 
       defaults = { :key => @api_key, :token => @api_token }
       options.merge!(defaults)
@@ -231,6 +229,12 @@ module Trello   # :nodoc:
       end
       uri.gsub! /&$/, ''
       open(uri).read
+    end
+
+    def _validate_request!(uri)
+      raise('invalid URI')        if uri.nil?         || uri.empty?
+      raise('invalid API key')    if @api_key.nil?    || @api_key.empty?
+      raise('invalid API token')  if @api_token.nil?  || @api_token.empty?
     end
 
   end # class Client
