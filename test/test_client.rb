@@ -17,6 +17,8 @@ class TestClient < Test::Unit::TestCase
 
     @test_dir   = File.dirname(__FILE__)
     @test_data  = File.join( @test_dir, 'data' )
+
+    FakeWeb.allow_net_connect = false
   end
 
 
@@ -107,6 +109,59 @@ class TestClient < Test::Unit::TestCase
       assert_not_nil  b.lists
       assert_kind_of  Array,    b.lists
       assert_equal    3,        b.lists.size
+    end
+  end
+
+  def test_card_parameter_validation
+    Trello::Client.new do |client|
+      assert_raise(RuntimeError, 'invalid id') { client.card(nil) }
+      assert_raise(RuntimeError, 'invalid id') { client.card('')  }
+
+      assert_nil    client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.card('id') }
+      client.api_key = ''
+      assert_equal  '', client.api_key
+      assert_raise(RuntimeError, 'invalid API key') { client.card('id') }
+      client.api_key = @api_key
+      assert_equal  @api_key, client.api_key  
+
+      assert_nil    client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.card('id') }
+      client.api_token = ''
+      assert_equal  '', client.api_token
+      assert_raise(RuntimeError, 'invalid API token') { client.card('id') }
+    end
+  end
+
+  def test_card
+    Trello::Client.new do |client|
+      client.api_key    = @api_key
+      client.api_token  = @api_token
+
+      json  = open( File.join( @test_data, 'card.json' ) ).read
+      card  = Trello::Client::Card.new(json)
+      uri   = "#{ client.api }/card/id?key=#{ client.api_key }&token=#{ client.api_token }"
+
+      FakeWeb.register_uri( :get, uri, :body => json )
+
+      blockable = false 
+      card = client.card('id') do |card|
+        assert_not_nil  card
+        assert_kind_of  Trello::Client::Card,       card
+        assert_equal    '4f4f9d56cf2e679318098ca3', card['id']
+        assert_equal    false,                      card['closed']
+        assert_equal    '',                         card['desc']
+        assert_equal    'Welcome to Trello!',       card['name']
+
+        blockable = true
+      end
+
+      assert_not_nil  card
+      assert_kind_of  Trello::Client::Card,       card
+      assert_equal    '4f4f9d56cf2e679318098ca3', card['id']
+      assert_equal    false,                      card['closed']
+      assert_equal    '',                         card['desc']
+      assert_equal    'Welcome to Trello!',       card['name']
     end
   end
 

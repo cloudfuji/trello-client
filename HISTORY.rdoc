@@ -2,7 +2,7 @@
 
 == YYYY-MM-DD v0.0.6
 
-* TBD
+* Added Trello::Client#card()
 
 
 == 2012-04-03 v0.0.5

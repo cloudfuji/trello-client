@@ -36,6 +36,7 @@ task :update_test_data do
     {
       'board'               => [ :board,  '4f4f9d55cf2e679318098c5b' ],
       'board_with_lists'    => [ :board,  '4f4f9d55cf2e679318098c5b', :lists => 'all' ],
+      'card'                => [ :card,   '4f4f9d56cf2e679318098ca3' ],
       'list'                => [ :list,   '4f4f9d55cf2e679318098c53' ],
       'list_with_cards'     => [ :list,   '4f4f9d55cf2e679318098c53', :cards => 'all' ],
       'member'              => [ :member, 'me' ],

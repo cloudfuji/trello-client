@@ -73,6 +73,12 @@ Get user token:
       end
     end
 
+    # Get card
+    client.card( '<identifier>' ) do |card|
+      card['id']      # => card identifier
+      card['name']    # => card name
+      card['closed']  # => true | false
+    end
   end
 
 == Author

@@ -86,6 +86,12 @@ require 'trello-client/version'
 #       end
 #     end
 #
+#     # Get card
+#     client.card( '<identifier>' ) do |card|
+#       card['id']      # => card identifier
+#       card['name']    # => card name
+#       card['closed']  # => true | false
+#     end
 #   end
 #
 # == Author
@@ -102,7 +108,6 @@ require 'trello-client/version'
 #
 # == To Do
 #
-# * Add +card()+
 # * DRY +Card+, +Board+, +List+ and +Member+
 # * DRY +board()+, +list()+ and +member()+
 # * Make +trello2todo+ configurable
@@ -157,6 +162,22 @@ module Trello   # :nodoc:
       b = Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
       yield b if block_given?
       b
+    end
+
+    #
+    # Get Trello::Client::Card object
+    # 
+    # See https://trello.com/docs/api/card/index.html
+    #
+    # Params:
+    # +id+:: Card identifier
+    # +options+:: (optional) Additional API parameters
+    #
+    def card(id, options = {} )
+      raise('invalid id') if id.nil? || id.empty?
+      c = Trello::Client::Card.new( _get( "#{api}/card/#{id}", options ) )
+      yield c if block_given?
+      c
     end
 
     #
