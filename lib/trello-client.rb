@@ -159,9 +159,9 @@ module Trello   # :nodoc:
     #
     def board(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      b = Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
-      yield b if block_given?
-      b
+      board = Trello::Client::Board.new( _get( "#{api}/board/#{id}", options ) )
+      yield board if block_given?
+      board
     end
 
     #
@@ -175,9 +175,9 @@ module Trello   # :nodoc:
     #
     def card(id, options = {} )
       raise('invalid id') if id.nil? || id.empty?
-      c = Trello::Client::Card.new( _get( "#{api}/card/#{id}", options ) )
-      yield c if block_given?
-      c
+      card = Trello::Client::Card.new( _get( "#{api}/card/#{id}", options ) )
+      yield card if block_given?
+      card
     end
 
     #

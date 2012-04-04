@@ -50,26 +50,52 @@ class TestClient < Test::Unit::TestCase
 
   def test_board
     Trello::Client.new do |client|
+      client.api_key    = @api_key
+      client.api_token  = @api_token
+
       json  = open( File.join( @test_data, 'board.json' ) ).read
-      b     = Trello::Client::Board.new(json)
-      client.stubs(:board).with('id').returns(b)
+      uri   = "#{ client.api }/board/id?key=#{ client.api_key }&token=#{ client.api_token }"
 
-      assert_not_nil  b
-      assert_kind_of  Trello::Client::Board,  b
+      FakeWeb.register_uri( :get, uri, :body => json )
 
-      assert_equal    '4f4f9d55cf2e679318098c5b',                                         b['id']
-      assert_equal    'Welcome Board',                                                    b['name']
-      assert_equal    '',                                                                 b['desc']
-      assert_equal    false,                                                              b['closed']
-      assert_equal    true,                                                               b['pinned']
-      assert_equal    'https://trello.com/board/welcome-board/4f4f9d55cf2e679318098c5b',  b['url']
-      assert_not_nil  b['prefs']
-      assert_kind_of  Hash,                                                               b['prefs']
-      assert_equal    5,                                                                  b['prefs'].size
+      blockable = false
+      board = client.board('id') do |board|
+        assert_not_nil  board
+        assert_kind_of  Trello::Client::Board,                                              board
+        assert_equal    '4f4f9d55cf2e679318098c5b',                                         board['id']
+        assert_equal    'Welcome Board',                                                    board['name']
+        assert_equal    '',                                                                 board['desc']
+        assert_equal    false,                                                              board['closed']
+        assert_equal    true,                                                               board['pinned']
+        assert_equal    'https://trello.com/board/welcome-board/4f4f9d55cf2e679318098c5b',  board['url']
+        assert_not_nil  board['prefs']
+        assert_kind_of  Hash,                                                               board['prefs']
+        assert_equal    5,                                                                  board['prefs'].size
 
-      assert_not_nil  b.lists
-      assert_kind_of  Array,    b.lists
-      assert_equal    0,        b.lists.size
+        assert_not_nil  board.lists
+        assert_kind_of  Array,    board.lists
+        assert_equal    0,        board.lists.size
+
+        blockable = true
+      end
+
+      assert  blockable
+
+      assert_not_nil  board
+      assert_kind_of  Trello::Client::Board,                                              board
+      assert_equal    '4f4f9d55cf2e679318098c5b',                                         board['id']
+      assert_equal    'Welcome Board',                                                    board['name']
+      assert_equal    '',                                                                 board['desc']
+      assert_equal    false,                                                              board['closed']
+      assert_equal    true,                                                               board['pinned']
+      assert_equal    'https://trello.com/board/welcome-board/4f4f9d55cf2e679318098c5b',  board['url']
+      assert_not_nil  board['prefs']
+      assert_kind_of  Hash,                                                               board['prefs']
+      assert_equal    5,                                                                  board['prefs'].size
+
+      assert_not_nil  board.lists
+      assert_kind_of  Array,    board.lists
+      assert_equal    0,        board.lists.size
     end
   end
 
@@ -111,7 +137,6 @@ class TestClient < Test::Unit::TestCase
       client.api_token  = @api_token
 
       json  = open( File.join( @test_data, 'card.json' ) ).read
-      card  = Trello::Client::Card.new(json)
       uri   = "#{ client.api }/card/id?key=#{ client.api_key }&token=#{ client.api_token }"
 
       FakeWeb.register_uri( :get, uri, :body => json )
@@ -127,6 +152,8 @@ class TestClient < Test::Unit::TestCase
 
         blockable = true
       end
+
+      assert blockable
 
       assert_not_nil  card
       assert_kind_of  Trello::Client::Card,       card
